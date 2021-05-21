@@ -69,7 +69,7 @@
             <form id="upload-file" method="post" enctype="multipart/form-data" class="my-10">
                 <fieldset>
                     <label for="file">Select a file</label>
-                    <input name="file" type="file" required
+                    <input name="file" id="file" type="file" required
                         accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
                 </fieldset>
 
@@ -105,6 +105,24 @@
         crossorigin="anonymous"></script>
 
     <script>
+        document.getElementById("file").addEventListener("change", validateFile)
+
+        function validateFile(){
+            const allowedExtensions =  ['pdf','doc','docx'];
+            const sizeLimit = 10000000;
+            
+            const { name:fileName, size:fileSize } = this.files[0];
+            
+            const fileExtension = fileName.split(".").pop();
+            if(!allowedExtensions.includes(fileExtension)){
+              alert("Alert !\nPlease upload only .pdf, doc and .docx");
+              this.value = null;
+            }else if(fileSize > sizeLimit){
+              alert("Alert !\nFile size too large. max 10Mb")
+              this.value = null;
+            }
+          }
+
 
         $(function () {
             $('#upload-file').submit(function (event) {

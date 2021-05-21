@@ -3,6 +3,7 @@ import sys
 import imghdr
 import pdftotext
 import pytesseract
+import textract
 from flask import jsonify
 from PIL import Image
 from pdf2image import convert_from_path
@@ -28,9 +29,7 @@ FILE_OUTPUT = '/home/count_words/files/output.txt'
 """
 Todo: 
 1. Refactorizar.
-2. Agregar el conteo de palabras para documentos .doc y .docx
-3. Agregar validaciones, peso 
-4. borrar contenido de los archivos planos donde se guarda el texto
+2. Convertir de doc a txt
 """
 
 
@@ -44,6 +43,22 @@ class CountWordsDocument():
         pass
 
 
+    def _doc_text(self, path_file):
+        #text = textract.process("/home/count_words/files/tareas_pruebas.docx")
+        self._clear_file_output()
+        text = textract.process(path_file)
+        text = str(text).replace('\\n', ' ').replace('\r', '').replace('\\', '').replace('xc3', '')
+        print(text)
+        with open(FILE_OUTPUT, 'w') as f:
+            f.write(str(text))
+
+        file = open(FILE_OUTPUT, "rt")
+        data = file.read()
+        
+        
+        return self._output_data(data)
+        
+    
     def _output_data(self, data):
         words = data.split()
         numbers = sum(c.isdigit() for c in data)
@@ -74,7 +89,7 @@ class CountWordsDocument():
         fileVariable.close()
 
     
-    def count_word_from_pdf(self, path_file):
+    def _count_word_from_pdf(self, path_file):
         print('countWordFromPdf')
 
         with open(path_file, "rb") as f:
@@ -91,7 +106,7 @@ class CountWordsDocument():
 
         return self._output_data(data)
 
-    def pdf_to_Text(self, file):
+    def _pdf_to_Text(self, file):
         print('pdftoText')
         self._clear_file_output()
 
@@ -119,7 +134,7 @@ class CountWordsDocument():
 
         return self._output_data(data)
 
-    def get_pdf_searchable_pages(self, fname):
+    def _get_pdf_searchable_pages(self, fname):
         print('get_pdf_searchable_pages')
 
         searchable_pages = []
@@ -182,17 +197,18 @@ class CountWordsDocument():
                 print('Documento pdf')
                 print('Saber si el documento es escaneado')
 
-                if self.get_pdf_searchable_pages(os.path.abspath(filename)):
+                if self._get_pdf_searchable_pages(os.path.abspath(filename)):
                     print('Documento digital')
 
-                    return self.count_word_from_pdf(filename)
+                    return self._count_word_from_pdf(filename)
                 else:
                     print('Documento escaneado')
 
-                    return self.pdf_to_Text(os.path.abspath(filename))
+                    return self._pdf_to_Text(os.path.abspath(filename))
 
             elif(file_extension == '.docx' or file_extension == '.doc'):
                 print('Es tipo doc o docx')
+                return self._doc_text(path_file=os.path.abspath(filename))
 
             else:
                 print('No es un formato valido')
