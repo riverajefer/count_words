@@ -43,7 +43,22 @@
             height: 260px;
             overflow-y: auto;
             padding: 9px 35px;
-            text-align: justify;            
+            text-align: justify;
+        }
+
+        ul {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            margin: 0 20px;
+            font-size: 1.7em;
         }
     </style>
 
@@ -64,30 +79,43 @@
         <main class="px-3 mt-10 ">
             <h1>Count words.</h1>
             <p class="lead my-5">
-                Documentos PDF digitales, Word, PDF escaneados.
+                Digital PDF documents or scanned PDF.<br>
+                maximum file size: <b>10Mb</b>
+                <ul>
+                    <li>.pdf</li>
+                    <li>.doc</li>
+                    <li>.docx</li>
+                    <li>.xls</li>
+                    <li>.xlsx</li>
+                    <li>.txt</li>
+                </ul>                
             </p>
             <form id="upload-file" method="post" enctype="multipart/form-data" class="my-10">
                 <fieldset>
-                    <label for="file">Select a file</label>
+                    <label for="file">SELETC A FILE</label>
                     <input name="file" id="file" type="file" required
-                        accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+                        accept=".txt, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
                 </fieldset>
-
                 <fieldset>
-                    <p id="wait" class="my-5">Procesando...</p>
+                    <p id="wait" class="my-5">
+                        Processing... <br>
+                        <img width="120px" class="my-5" src="{{url_for('static', filename='loader.gif')}}">
+                    </p>
 
                     <button id="upload-file-btn" type="submit" class="btn btn-success my-5"
                         type="button">UPLOAD</button>
                 </fieldset>
+                
             </form>
 
             <div class="result">
-                <h2>
-                    Words: <span id="words">0</span>
-                </h2>
-                <h2>
-                    Numbers: <span id="numbers">0</span>
-                </h2>
+
+                <ul>
+                    <li>Words: <span id="words">0</span></li>
+                    <li>Numbers: <span id="numbers">0</span></li>
+                    <li>Spaces: <span id="spaces">0</span></li>
+                    <li>Others: <span id="others">0</span></li>
+                </ul>
                 <hr>
                 <p id="text">
                 </p>
@@ -107,21 +135,21 @@
     <script>
         document.getElementById("file").addEventListener("change", validateFile)
 
-        function validateFile(){
-            const allowedExtensions =  ['pdf','doc','docx'];
+        function validateFile() {
+            const allowedExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt'];
             const sizeLimit = 10000000;
-            
-            const { name:fileName, size:fileSize } = this.files[0];
-            
+
+            const { name: fileName, size: fileSize } = this.files[0];
+
             const fileExtension = fileName.split(".").pop();
-            if(!allowedExtensions.includes(fileExtension)){
-              alert("Alert !\nPlease upload only .pdf, doc and .docx");
-              this.value = null;
-            }else if(fileSize > sizeLimit){
-              alert("Alert !\nFile size too large. max 10Mb")
-              this.value = null;
+            if (!allowedExtensions.includes(fileExtension)) {
+                alert("Alert !\nPlease upload only .pdf, doc and .docx .xls .xlsx .txt");
+                this.value = null;
+            } else if (fileSize > sizeLimit) {
+                alert("Alert !\nFile size too large. max 10Mb")
+                this.value = null;
             }
-          }
+        }
 
 
         $(function () {
@@ -143,6 +171,7 @@
                     cache: false,
                     processData: false,
                     success: function (data) {
+
                         console.log('Success!');
                         $('#upload-file-btn').show();
                         $('#wait').hide();
@@ -153,10 +182,12 @@
                             $('#words').text(data.words);
                             $('#numbers').text(data.numbers);
                             $('#text').text(data.text);
+                            $('#spaces').text(data.spaces);
+                            $('#others').text(data.others);
                             $('#upload-file-btn').show();
                         } else {
                             $('#upload-file-btn').show();
-                            alert('Algo pasó.\n Archivo no permitido !');
+                            alert('Alert!!.\n Archivo no permitido !');
                         }
 
                     },

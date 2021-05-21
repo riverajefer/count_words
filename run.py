@@ -20,17 +20,10 @@ app = Flask(__name__)
 app.config['DEBUG'] = True
 
 UPLOAD_FOLDER = '/home/count_words/files'
-app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-ALLOWED_EXTENSIONS = {'pdf', 'docx', 'doc'}
+ALLOWED_EXTENSIONS = {'pdf', 'docx', 'doc',  'xls', 'xlsx', 'txt'}
 FILE_OUTPUT = '/home/count_words/files/output.txt'
-
-
-"""
-Todo: 
-1. Refactorizar.
-2. Convertir de doc a txt
-"""
 
 
 def allowed_file(filename):
@@ -44,17 +37,15 @@ class CountWordsDocument():
 
 
     def _doc_text(self, path_file):
-        #text = textract.process("/home/count_words/files/tareas_pruebas.docx")
         self._clear_file_output()
         text = textract.process(path_file)
         text = str(text).replace('\\n', ' ').replace('\r', '').replace('\\', '').replace('xc3', '')
-        print(text)
+        
         with open(FILE_OUTPUT, 'w') as f:
             f.write(str(text))
 
         file = open(FILE_OUTPUT, "rt")
         data = file.read()
-        
         
         return self._output_data(data)
         
@@ -106,8 +97,10 @@ class CountWordsDocument():
 
         return self._output_data(data)
 
+
     def _pdf_to_Text(self, file):
-        print('pdftoText')
+        print('Start Proccess Documento escaneado')
+        
         self._clear_file_output()
 
         pages = convert_from_path(file, 500)
@@ -133,6 +126,7 @@ class CountWordsDocument():
         data = file.read()
 
         return self._output_data(data)
+
 
     def _get_pdf_searchable_pages(self, fname):
         print('get_pdf_searchable_pages')
@@ -191,7 +185,7 @@ class CountWordsDocument():
             print(os.path.abspath(filename))
 
             file_name, file_extension = os.path.splitext(path_file)
-            print(file_extension)
+            print(f"file_extension: {file_extension}")
 
             if(file_extension == '.pdf'):
                 print('Documento pdf')
@@ -199,15 +193,16 @@ class CountWordsDocument():
 
                 if self._get_pdf_searchable_pages(os.path.abspath(filename)):
                     print('Documento digital')
-
-                    return self._count_word_from_pdf(filename)
+                    
+                    return self._doc_text(path_file=os.path.abspath(filename))
+                    #return self._count_word_from_pdf(filename)
                 else:
                     print('Documento escaneado')
 
                     return self._pdf_to_Text(os.path.abspath(filename))
 
-            elif(file_extension == '.docx' or file_extension == '.doc'):
-                print('Es tipo doc o docx')
+            elif(file_extension == '.docx' or file_extension == '.doc' or file_extension == '.xlsx' or file_extension == '.xls' or file_extension == '.txt'):
+                print('Es tipo doc o docx, .xlsx')
                 return self._doc_text(path_file=os.path.abspath(filename))
 
             else:
