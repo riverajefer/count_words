@@ -1,14 +1,21 @@
+from __future__ import print_function
 import os
 import sys
+import pytz
 import imghdr
 import pdftotext
 import pytesseract
 import textract
+import time
+import smtplib
+from datetime import datetime, timezone
 from flask import jsonify
 from PIL import Image
 from pdf2image import convert_from_path
 from pdfminer.pdfpage import PDFPage
 from werkzeug.utils import secure_filename
+from flask_mail import Mail, Message
+
 
 from flask import (
     Flask, render_template,
@@ -25,31 +32,37 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = {'pdf', 'docx', 'doc',  'xls', 'xlsx', 'txt'}
 FILE_OUTPUT = '/home/count_words/files/output.txt'
 
+app.config['MAIL_SERVER'] = 'smtp.mailtrap.io'
+app.config['MAIL_PORT'] = 2525
+app.config['MAIL_USERNAME'] = '4122a92b0a6fd9'
+app.config['MAIL_PASSWORD'] = '432fdd7cfbde13'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = False
+
+mail = Mail(app)
+
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
 class CountWordsDocument():
-
-    def __init__(self):
-        pass
-
 
     def _doc_text(self, path_file):
         self._clear_file_output()
         text = textract.process(path_file)
-        text = str(text).replace('\\n', ' ').replace('\r', '').replace('\\', '').replace('xc3', '')
-        
+        text = str(text).replace('\\n', ' ').replace(
+            '\r', '').replace('\\', '').replace('xc3', '')
+
         with open(FILE_OUTPUT, 'w') as f:
             f.write(str(text))
 
         file = open(FILE_OUTPUT, "rt")
         data = file.read()
-        
+
         return self._output_data(data)
-        
-    
+
     def _output_data(self, data):
         words = data.split()
         numbers = sum(c.isdigit() for c in data)
@@ -57,21 +70,17 @@ class CountWordsDocument():
         spaces = sum(c.isspace() for c in data)
         others = len(data) - numbers - letters - spaces
 
-        print('TOTAL PALABRAS :', len(words))
-        print('TOTAL NUMEROS :', numbers)
-
         output = {
             'success': True,
             'words': len(words),
             'numbers': numbers,
-            'text': str(data), 
+            'text': str(data),
             'spaces': str(spaces),
             'others': str(others)
         }
-        
-        print(output)
 
-        return jsonify(output)
+        print(output)
+        return output
 
 
     def _clear_file_output(self):
@@ -79,15 +88,13 @@ class CountWordsDocument():
         fileVariable.truncate(0)
         fileVariable.close()
 
-    
     def _count_word_from_pdf(self, path_file):
         print('countWordFromPdf')
 
         with open(path_file, "rb") as f:
             pdf = pdftotext.PDF(f)
-        
-        self._clear_file_output()
 
+        self._clear_file_output()
 
         with open(FILE_OUTPUT, 'w') as f:
             f.write("\n\n".join(pdf))
@@ -97,10 +104,9 @@ class CountWordsDocument():
 
         return self._output_data(data)
 
-
     def _pdf_to_Text(self, file):
         print('Start Proccess Documento escaneado')
-        
+
         self._clear_file_output()
 
         pages = convert_from_path(file, 500)
@@ -126,7 +132,6 @@ class CountWordsDocument():
         data = file.read()
 
         return self._output_data(data)
-
 
     def _get_pdf_searchable_pages(self, fname):
         print('get_pdf_searchable_pages')
@@ -169,8 +174,7 @@ class CountWordsDocument():
     def _file_not_allowed(self):
         data = {'success': False, 'message': 'Archivo no permitido'}
 
-        return jsonify(data)
-    
+        return data
     
     def on_start_count(self, file):
         print('onStartCount')
@@ -193,9 +197,9 @@ class CountWordsDocument():
 
                 if self._get_pdf_searchable_pages(os.path.abspath(filename)):
                     print('Documento digital')
-                    
+
                     return self._doc_text(path_file=os.path.abspath(filename))
-                    #return self._count_word_from_pdf(filename)
+                    # return self._count_word_from_pdf(filename)
                 else:
                     print('Documento escaneado')
 
@@ -207,12 +211,12 @@ class CountWordsDocument():
 
             else:
                 print('No es un formato valido')
-                
+
                 return self._file_not_allowed()
 
         else:
             print('Formato no permitido')
-            
+
             return self._file_not_allowed()
 
 
@@ -221,10 +225,90 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/form_count')
+def form_count():
+    return render_template('form_count.html')
+
+
+@app.route('/form_client')
+def form_client():
+    return render_template('form_client.html')
+
+
 @app.route('/uploader', methods=['POST'])
 def upload_file():
     file = request.files['file']
     return CountWordsDocument().on_start_count(file=file)
+
+
+def on_proccess_request(request):
+    tz = pytz.timezone('America/Bogota')
+    bogota_now = datetime.now(tz)
+
+    name = request.form['name']
+    business = request.form['business']
+    jobPosition = request.form['jobPosition']
+    country = request.form['country']
+    state = request.form['state']
+    city = request.form['city']
+    phone = request.form['phone']
+    email = request.form['email']
+    message = request.form['message']
+    dateDelivery = request.form['dateDelivery']
+    lang_from = request.form['lang_from']
+    lang_to = request.form['lang_to']
+
+    data_form = {
+        'name': name,
+        'business': business,
+        'jobPosition': jobPosition,
+        'country': country,
+        'state': state,
+        'city': city,
+        'phone': phone,
+        'email': email,
+        'message': message,
+        'dateDelivery': dateDelivery,
+        'lang_from': lang_from,
+        'lang_to': lang_to,
+        'now': bogota_now
+    }
+    print(data_form)
+
+    return data_form
+
+
+'''
+1.1 Integrar el formulario de envio del archivo al otro formulario de datos
+2. Validar los datos.
+Enviar los datos al correo.
+cuando termine el conteo de palabras enviar el correo, con los datos
+
+Falta meter el proceso de conteo dentro de un hilo
+
+165.232.156.205:5000
+'''
+
+
+def send_mail(data_form, data_count_text):
+    print('Enviar correo...')
+    msg = Message('Formulario', sender='webmaster@ptetime.com',
+                  recipients=['jefersonpatino@yahoo.es'])
+    msg.html = render_template('template_email.html', data=data_form, data_count_text=data_count_text)
+    mail.send(msg)
+    print('Enviado !')
+
+
+@app.route('/form_client_post', methods=['POST'])
+def form_client_post():
+    if request.method == 'POST':
+        data_form = on_proccess_request(request=request)
+        file = request.files['file']
+        data_count_text = CountWordsDocument().on_start_count(file=file)
+        
+        send_mail(data_form=data_form, data_count_text=data_count_text)
+        
+        return jsonify(data_count_text)
 
 
 if __name__ == '__main__':

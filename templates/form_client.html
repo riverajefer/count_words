@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario</title>
+    <!-- CSS only -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.css">
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/cover/">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="//geodata.solutions/includes/countrystatecity.js"></script>
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+
+        #wait {
+            display: none;
+        }
+
+        .result {
+            display: none;
+            margin: 0 auto;
+            width: 80%;
+            border: 1px solid #ccc;
+            padding: 15px 10px;
+            border-radius: 15px;
+        }
+
+        #text {
+            height: 260px;
+            overflow-y: auto;
+            padding: 9px 35px;
+            text-align: justify;
+        }
+
+        ul {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            margin: 0 20px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+
+<body class="d-flex h-100 text-center">
+    <div class="container px-5 my-5" style="width: 700px">
+        <form id="onSubmit" method="post" enctype="multipart/form-data">
+            <div class="form-floating mb-3">
+                <input class="form-control" name="name" id="name" required type="text" placeholder="Name"
+                    data-sb-validations="required" />
+                <label for="name">Nombre/Name*</label>
+                <div class="invalid-feedback" data-sb-feedback="name:required">Name is required.</div>
+            </div>
+            <div class="form-floating mb-3">
+                <input class="form-control" name="business" id="Business" required type="text" placeholder="Business"
+                    data-sb-validations="required" />
+                <label for="Business">Empresa/Business Name</label>
+                <div class="invalid-feedback" data-sb-feedback="Business:required">Business is required.</div>
+            </div>
+            <div class="form-floating mb-3">
+                <input class="form-control" id="jobPosition" name="jobPosition" type="text" placeholder="Job position"
+                    data-sb-validations="" />
+                <label for="jobPosition">Cargo/Job position</label>
+            </div>
+            <div class="form-floating mb-3">
+                <select name="country" class="countries form-control" required id="countryId">
+                    <option value="">Select</option>
+                </select>
+                <label for="countryId">Pais/Country</label>
+            </div>
+            <div class="form-floating mb-3">
+                <select name="state" class="states form-control" id="stateId">
+                    <option value="">Select</option>
+                </select>
+                <label for="stateId">Departamento/State</label>
+            </div>
+            <div class="form-floating mb-3">
+                <select name="city" class="cities form-control" id="cityId">
+                    <option value="">Select</option>
+                </select>
+                <label for="cityId">Ciudad/City</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input class="form-control" name="phone" required id="telefonoMovil" type="text"
+                    placeholder="Teléfono móvil" data-sb-validations="required" />
+                <label for="telefonoMovil">Teléfono móvil/Mobile number</label>
+                <div class="invalid-feedback" data-sb-feedback="telefonoMovil:required">Teléfono móvil is required.
+                </div>
+            </div>
+            <div class="form-floating mb-3">
+                <input class="form-control" name="email" required id="emailAddress" type="email"
+                    placeholder="Email Address" data-sb-validations="required,email" />
+                <label for="emailAddress">Email Address</label>
+                <div class="invalid-feedback" data-sb-feedback="emailAddress:required">Email Address is required.</div>
+                <div class="invalid-feedback" data-sb-feedback="emailAddress:email">Email Address Email is not valid.
+                </div>
+            </div>
+
+            <div class="form-floating mb-3">
+                <textarea class="form-control" id="message" type="text" name="message" placeholder="Message"
+                    style="height: 10rem;"></textarea>
+                <label for="message">Message</label>
+            </div>
+            <div class="mb-6">
+                <p>Change</p>
+                <div class="row">
+                    <div class="col" id="lang_from">
+                        <p>SPANISH</p>
+                        <p style="display: none">ENGLISH</p>
+                    </div>
+                    <div class="col">
+                        <button type="button" id="btnToggle" class="btn btn-outline-info">
+                            <span class="material-icons">swap_horiz</span>
+                        </button>
+                    </div>
+                    <div class="col" id="lang_to">
+                        <p>ENGLISH</p>
+                        <p style="display: none">SPANISH</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-floating mb-3 mt-3">
+                <input class="form-control" id="dateDelivery" required name="dateDelivery" type="date"
+                    placeholder="Fecha de entrega" data-sb-validations="required" />
+                <label for="dateDelivery">Fecha de entrega/Delivery date*</label>
+                <div class="invalid-feedback" data-sb-feedback="dateDelivery:required">Delivery date is required.</div>
+            </div>
+            <main class="px-3 mt-15">
+                <p class="lead my-5">
+                    Digital PDF documents or scanned PDF.<br>
+                    maximum file size: <b>10Mb</b>
+                <ul>
+                    <li>.pdf</li>
+                    <li>.doc</li>
+                    <li>.docx</li>
+                    <li>.xls</li>
+                    <li>.xlsx</li>
+                    <li>.txt</li>
+                </ul>
+                </p>
+                <fieldset>
+                    <label for="file">Select a file</label>
+                    <input name="file" id="file" type="file" required
+                        accept=".txt, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+                </fieldset>
+                <fieldset>
+                    <p id="wait" class="my-5">
+                        Processing... <br>
+                        <img width="120px" class="my-5" src="{{url_for('static', filename='loader.gif')}}">
+                    </p>
+                </fieldset>
+                <div class="result">
+                    <ul>
+                        <li>Words: <span id="words">0</span></li>
+                        <li>Numbers: <span id="numbers">0</span></li>
+                        <li>Spaces: <span id="spaces">0</span></li>
+                        <li>Others: <span id="others">0</span></li>
+                    </ul>
+                    <hr>
+                    <p id="text">
+                    </p>
+                </div>
+            </main>
+
+            <div class="d-none" id="submitSuccessMessage">
+                <div class="text-center mb-3">
+                    <div class="fw-bolder">Form submission successful!</div>
+                    <p>To activate this form, sign up at</p>
+                </div>
+            </div>
+            <div class="d-none" id="submitErrorMessage">
+                <div class="text-center text-danger mb-3">Error sending message!</div>
+            </div>
+            <div class="d-grid my-5">
+                <button class="btn btn-success btn-lg" type="submit" id="submitBtn" type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+    <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.js"></script>
+<!-- JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+    crossorigin="anonymous"></script>
+<script>
+    $('#btnToggle').click(() => {
+        $('#lang_from p').toggle();
+        $('#lang_to p').toggle();
+    });
+
+    document.getElementById("file").addEventListener("change", validateFile)
+
+    function validateFile() {
+        const allowedExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt'];
+        const sizeLimit = 10000000;
+
+        const { name: fileName, size: fileSize } = this.files[0];
+
+        const fileExtension = fileName.split(".").pop();
+        if (!allowedExtensions.includes(fileExtension)) {
+            alert("Alert !\nPlease upload only .pdf, doc and .docx .xls .xlsx .txt");
+            this.value = null;
+        } else if (fileSize > sizeLimit) {
+            alert("Alert !\nFile size too large. max 10Mb")
+            this.value = null;
+        }
+    }
+
+    $(function () {
+        $('#onSubmit').submit(function (event) {
+            console.log('start upload');
+
+            $('#submitBtn').hide();
+            $('.result').hide();
+            $('#wait').show();
+
+            event.preventDefault();
+
+            var form_data = new FormData($('#onSubmit')[0]);
+            let lang_from = $('#lang_from p:visible').first().text();
+            let lang_to = $('#lang_to p:visible').first().text();
+
+            form_data.append("lang_from", lang_from);
+            form_data.append("lang_to", lang_to);
+
+            $.ajax({
+                type: 'POST',
+                url: '/form_client_post',
+                data: form_data,
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function (data) {
+
+                    console.log('Success!');
+                    $('#submitBtn').show();
+                    $('#wait').hide();
+                   //todo: $("#onSubmit")[0].reset();
+
+                    if (data.success) {
+                        $('.result').show();
+                        $('#words').text(data.words);
+                        $('#numbers').text(data.numbers);
+                        $('#text').text(data.text);
+                        $('#spaces').text(data.spaces);
+                        $('#others').text(data.others);
+                        $('#submitBtn').show();
+                    } else {
+                        $('#submitBtn').show();
+                        console.log('Alert!!.\n Archivo no permitido !');
+                        // alert('Alert!!.\n Archivo no permitido !');
+                    }
+
+                },
+                error: function (error) {
+                    console.log('error: ', error);
+                    $('#submitBtn').show();
+                    $('#wait').hide();
+                    //todo: $("#onSubmit")[0].reset();
+                    alert('Error');
+                }
+            });
+        });
+    });
+
+
+</script>
+</body>
+
+</html>

@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Form</title>
+        <style>
+            li {
+                margin: 10px 0px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1 class="text-center">FORM DATA</h1>
+        <ul>
+            <li>
+               Name:  {{data['name']}}
+            </li>
+            <li>
+               Business: {{data['business']}}
+            </li>
+            <li>
+               Job Position: {{data['jobPosition']}}
+            </li>
+            <li>
+                Country: {{data['country']}}
+            </li>
+            <li>
+                State: {{data['state']}}
+            </li>
+            <li>
+                City: {{data['city']}}
+            </li>
+            <li>
+                Phone: {{data['phone']}}
+            </li>
+            <li>
+                Email: {{data['email']}}
+            </li>
+            <li>
+                Date Delivery: {{data['dateDelivery']}}
+            </li>
+            <li>
+                Lang from: {{data['lang_from']}}
+            </li>
+            <li>
+                Lang to: {{data['lang_to']}}
+            </li>
+            <li>
+                Completion date (Bogotá): {{data['now']}}
+            </li>
+            <li>
+                Message: {{data['message']}}
+            </li>       
+        </ul>
+        <hr>
+        {{data_count_text}}
+
+        {% if data_count_text['success'] %}
+        <div>
+            <h2>Contenido del archivo</h2>
+            <ul>
+                <li>
+                    words: {{data_count_text['words']}}
+                </li>
+                <li>
+                    numbers: {{data_count_text['numbers']}}
+                </li>
+                <li>
+                    spaces: {{data_count_text['spaces']}}
+                </li>
+                <li>
+                    others: {{data_count_text['others']}}
+                </li>
+            </ul>
+        </div>
+        {% endif %}
+    </body>
+</html>

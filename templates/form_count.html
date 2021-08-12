@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ mytitle }}</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.css">
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/cover/">
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+
+        #wait {
+            display: none;
+        }
+
+        .result {
+            display: none;
+            margin: 0 auto;
+            width: 80%;
+            border: 1px solid #ccc;
+            padding: 15px 10px;
+            border-radius: 15px;
+        }
+
+        #text {
+            height: 260px;
+            overflow-y: auto;
+            padding: 9px 35px;
+            text-align: justify;
+        }
+
+        ul {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            margin: 0 20px;
+            font-size: 1.7em;
+        }
+    </style>
+
+</head>
+
+<body class="d-flex h-100 text-center text-white bg-dark">
+
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+        <header class="mb-auto">
+            <div>
+                <h3 class="float-md-start mb-0">Count</h3>
+                <nav class="nav nav-masthead justify-content-center float-md-end">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="px-3 mt-10 ">
+            <h1>Count words.</h1>
+            <p class="lead my-5">
+                Digital PDF documents or scanned PDF.<br>
+                maximum file size: <b>10Mb</b>
+                <ul>
+                    <li>.pdf</li>
+                    <li>.doc</li>
+                    <li>.docx</li>
+                    <li>.xls</li>
+                    <li>.xlsx</li>
+                    <li>.txt</li>
+                </ul>                
+            </p>
+            <form id="upload-file" method="post" enctype="multipart/form-data" class="my-10">
+                <fieldset>
+                    <label for="file">SELETC A FILE</label>
+                    <input name="file" id="file" type="file" required
+                        accept=".txt, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+                </fieldset>
+                <fieldset>
+                    <p id="wait" class="my-5">
+                        Processing... <br>
+                        <img width="120px" class="my-5" src="{{url_for('static', filename='loader.gif')}}">
+                    </p>
+
+                    <button id="upload-file-btn" type="submit" class="btn btn-success my-5"
+                        type="button">UPLOAD</button>
+                </fieldset>
+                
+            </form>
+
+            <div class="result">
+
+                <ul>
+                    <li>Words: <span id="words">0</span></li>
+                    <li>Numbers: <span id="numbers">0</span></li>
+                    <li>Spaces: <span id="spaces">0</span></li>
+                    <li>Others: <span id="others">0</span></li>
+                </ul>
+                <hr>
+                <p id="text">
+                </p>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.js"></script>
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+        crossorigin="anonymous"></script>
+
+    <script>
+        document.getElementById("file").addEventListener("change", validateFile)
+
+        function validateFile() {
+            const allowedExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt'];
+            const sizeLimit = 10000000;
+
+            const { name: fileName, size: fileSize } = this.files[0];
+
+            const fileExtension = fileName.split(".").pop();
+            if (!allowedExtensions.includes(fileExtension)) {
+                alert("Alert !\nPlease upload only .pdf, doc and .docx .xls .xlsx .txt");
+                this.value = null;
+            } else if (fileSize > sizeLimit) {
+                alert("Alert !\nFile size too large. max 10Mb")
+                this.value = null;
+            }
+        }
+
+
+        $(function () {
+            $('#upload-file').submit(function (event) {
+                console.log('start upload');
+
+                $('#upload-file-btn').hide();
+                $('.result').hide();
+                $('#wait').show();
+                event.preventDefault();
+
+                var form_data = new FormData($('#upload-file')[0]);
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/uploader',
+                    data: form_data,
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    success: function (data) {
+
+                        console.log('Success!');
+                        $('#upload-file-btn').show();
+                        $('#wait').hide();
+                        $("#upload-file")[0].reset();
+
+                        if (data.success) {
+                            $('.result').show();
+                            $('#words').text(data.words);
+                            $('#numbers').text(data.numbers);
+                            $('#text').text(data.text);
+                            $('#spaces').text(data.spaces);
+                            $('#others').text(data.others);
+                            $('#upload-file-btn').show();
+                        } else {
+                            $('#upload-file-btn').show();
+                            alert('Alert!!.\n Archivo no permitido !');
+                        }
+
+                    },
+                    error: function (error) {
+                        console.log('error: ', error);
+                        $('#upload-file-btn').show();
+                        $('#wait').hide();
+                        $("#upload-file")[0].reset();
+                        alert('Error');
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>
