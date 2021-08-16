@@ -6,7 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario</title>
-    <!-- CSS only -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
@@ -17,56 +16,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="//geodata.solutions/includes/countrystatecity.js"></script>
-    <style>
-        .bd-placeholder-img {
-            font-size: 1.125rem;
-            text-anchor: middle;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            user-select: none;
-        }
-
-        @media (min-width: 768px) {
-            .bd-placeholder-img-lg {
-                font-size: 3.5rem;
-            }
-        }
-
-        #wait {
-            display: none;
-        }
-
-        .result {
-            display: none;
-            margin: 0 auto;
-            width: 80%;
-            border: 1px solid #ccc;
-            padding: 15px 10px;
-            border-radius: 15px;
-        }
-
-        #text {
-            height: 260px;
-            overflow-y: auto;
-            padding: 9px 35px;
-            text-align: justify;
-        }
-
-        ul {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        li {
-            margin: 0 20px;
-            font-size: 1.2em;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 
 <body class="d-flex h-100 text-center">
@@ -122,12 +72,17 @@
                 <div class="invalid-feedback" data-sb-feedback="emailAddress:email">Email Address Email is not valid.
                 </div>
             </div>
-
             <div class="form-floating mb-3">
                 <textarea class="form-control" id="message" type="text" name="message" placeholder="Message"
                     style="height: 10rem;"></textarea>
                 <label for="message">Message</label>
             </div>
+            <div class="form-floating mb-3 mt-3">
+                <input class="form-control" id="dateDelivery" required name="dateDelivery" type="date"
+                    placeholder="Fecha de entrega" data-sb-validations="required" />
+                <label for="dateDelivery">Fecha de entrega/Delivery date*</label>
+                <div class="invalid-feedback" data-sb-feedback="dateDelivery:required">Delivery date is required.</div>
+            </div>            
             <div class="mb-6">
                 <p>Change</p>
                 <div class="row">
@@ -146,12 +101,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form-floating mb-3 mt-3">
-                <input class="form-control" id="dateDelivery" required name="dateDelivery" type="date"
-                    placeholder="Fecha de entrega" data-sb-validations="required" />
-                <label for="dateDelivery">Fecha de entrega/Delivery date*</label>
-                <div class="invalid-feedback" data-sb-feedback="dateDelivery:required">Delivery date is required.</div>
-            </div>
+
             <main class="px-3 mt-15">
                 <p class="lead my-5">
                     Digital PDF documents or scanned PDF.<br>
@@ -176,28 +126,23 @@
                         <img width="120px" class="my-5" src="{{url_for('static', filename='loader.gif')}}">
                     </p>
                 </fieldset>
-                <div class="result">
-                    <ul>
-                        <li>Words: <span id="words">0</span></li>
-                        <li>Numbers: <span id="numbers">0</span></li>
-                        <li>Spaces: <span id="spaces">0</span></li>
-                        <li>Others: <span id="others">0</span></li>
-                    </ul>
-                    <hr>
-                    <p id="text">
-                    </p>
+                <div class="send_success my-5">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        Send Success!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+                <div class="send_error my-5">
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        Error <p id="msg_error"></p>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
                 </div>
             </main>
-
-            <div class="d-none" id="submitSuccessMessage">
-                <div class="text-center mb-3">
-                    <div class="fw-bolder">Form submission successful!</div>
-                    <p>To activate this form, sign up at</p>
-                </div>
-            </div>
             <div class="d-none" id="submitErrorMessage">
                 <div class="text-center text-danger mb-3">Error sending message!</div>
             </div>
+
             <div class="d-grid my-5">
                 <button class="btn btn-success btn-lg" type="submit" id="submitBtn" type="submit">Submit</button>
             </div>
@@ -209,7 +154,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.js"></script>
-<!-- JavaScript Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
     crossorigin="anonymous"></script>
@@ -256,39 +200,34 @@
 
             $.ajax({
                 type: 'POST',
-                url: '/form_client_post',
+                url: '/form_client',
                 data: form_data,
                 contentType: false,
                 cache: false,
                 processData: false,
                 success: function (data) {
-
                     console.log('Success!');
                     $('#submitBtn').show();
                     $('#wait').hide();
                    //todo: $("#onSubmit")[0].reset();
 
                     if (data.success) {
-                        $('.result').show();
-                        $('#words').text(data.words);
-                        $('#numbers').text(data.numbers);
-                        $('#text').text(data.text);
-                        $('#spaces').text(data.spaces);
-                        $('#others').text(data.others);
+                        $('.send_success').show();
                         $('#submitBtn').show();
                     } else {
                         $('#submitBtn').show();
+                        $('.send_error').show();
+                        $('.send_error .msg_error').text('Archivo no permitido !');
                         console.log('Alert!!.\n Archivo no permitido !');
-                        // alert('Alert!!.\n Archivo no permitido !');
                     }
 
                 },
                 error: function (error) {
                     console.log('error: ', error);
+                    $('.send_error .msg_error').text(error);
                     $('#submitBtn').show();
                     $('#wait').hide();
                     //todo: $("#onSubmit")[0].reset();
-                    alert('Error');
                 }
             });
         });
