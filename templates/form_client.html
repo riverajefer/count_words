@@ -167,7 +167,7 @@
 
     function validateFile() {
         const allowedExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt'];
-        const sizeLimit = 10000000;
+        const sizeLimit = 15000000;
 
         const { name: fileName, size: fileSize } = this.files[0];
 
@@ -209,7 +209,7 @@
                     console.log('Success!');
                     $('#submitBtn').show();
                     $('#wait').hide();
-                   //todo: $("#onSubmit")[0].reset();
+                    $("#onSubmit")[0].reset();
 
                     if (data.success) {
                         $('.send_success').show();
@@ -227,12 +227,11 @@
                     $('.send_error .msg_error').text(error);
                     $('#submitBtn').show();
                     $('#wait').hide();
-                    //todo: $("#onSubmit")[0].reset();
+                    $("#onSubmit")[0].reset();
                 }
             });
         });
     });
-
 
 </script>
 </body>

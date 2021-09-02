@@ -6,14 +6,17 @@ import time
 from flask import jsonify
 import threading
 from flask import (Flask, render_template, request)
+import logging
+from logging.handlers import RotatingFileHandler
 
 from modules.counter_words.count_words import CountWordsDocument
 from modules.mail_proccess.mail_process import MailProccess
 from modules.proccess_request.proccess_request import ProccessRquest
 
 app = Flask(__name__)
-app.config['DEBUG'] = True
+app.config['DEBUG'] = False
 
+LOG_FILENAME='/home/count_words/register.log'
 
 @app.route('/')
 def index():
@@ -37,12 +40,14 @@ def on_proccess_text_and_send_mail(file, data_form):
 @app.route('/form_client', methods=['GET', 'POST'])
 def form_client():
     if request.method == 'POST':
+        app.logger.info('Start post')
         data_form = ProccessRquest().on_proccess_request(request=request)
         file = request.files['file']
 
-        threading.Thread(target=on_proccess_text_and_send_mail,
-                         daemon=True, args=[file, data_form]).start()
+        #on_proccess_text_and_send_mail(file, data_form)
+        threading.Thread(target=on_proccess_text_and_send_mail, daemon=True, args=[file, data_form]).start()
 
+        
         while threading.activeCount() > 1:
             time.sleep(5)
             data = {
@@ -55,4 +60,10 @@ def form_client():
 
 
 if __name__ == '__main__':
+    formatter = logging.Formatter("[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s")
+    handler = RotatingFileHandler(LOG_FILENAME, maxBytes=10000000, backupCount=30)
+    handler.setLevel(logging.DEBUG)
+    handler.setFormatter(formatter)
+    app.logger.addHandler(handler)
+        
     app.run(host="0.0.0.0")

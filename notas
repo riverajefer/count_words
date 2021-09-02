@@ -25,8 +25,6 @@ https://www.digitalocean.com/community/tutorials/como-preparar-aplicaciones-de-f
 165.232.156.205:5000
 
 
-
-
 gunicorn --bind 0.0.0.0:5000 wsgi:app
 sudo systemctl start countw
 sudo systemctl enable countw

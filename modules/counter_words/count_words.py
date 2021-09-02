@@ -5,7 +5,8 @@ import pdftotext
 import pytesseract
 import textract
 from PIL import Image
-from pdf2image import convert_from_path
+import tempfile
+from pdf2image import convert_from_path, convert_from_bytes
 from pdfminer.pdfpage import PDFPage
 from werkzeug.utils import secure_filename
 from flask import Flask
@@ -56,6 +57,7 @@ class CountWordsDocument():
         }
 
         print(output)
+        app.logger.info('Procesado Ok !')
         return output
 
 
@@ -63,35 +65,50 @@ class CountWordsDocument():
         fileVariable = open(FILE_OUTPUT, 'r+')
         fileVariable.truncate(0)
         fileVariable.close()
+        print('fileVariable')
+        print(fileVariable)
 
     def _pdf_to_Text(self, file):
         print('Start Proccess Documento escaneado')
+        
+        try:
+            self._clear_file_output()
 
-        self._clear_file_output()
+            print('inicio convert_from_path')
+            with tempfile.TemporaryDirectory() as path:
+                pages = convert_from_path(file, output_folder=path)
+            
+                #pages = convert_from_path(file, 500)
+                #pages = convert_from_bytes(open(file, 'rb').read())
+                image_counter = 1
 
-        pages = convert_from_path(file, 500)
-        image_counter = 1
+                for page in pages:
+                    filename = "page_"+str(image_counter)+".jpg"
+                    page.save(filename, 'JPEG')
+                    image_counter = image_counter + 1
 
-        for page in pages:
-            filename = "page_"+str(image_counter)+".jpg"
-            page.save(filename, 'JPEG')
-            image_counter = image_counter + 1
+                filelimit = image_counter-1
+                f = open(FILE_OUTPUT, "a")
 
-        filelimit = image_counter-1
-        f = open(FILE_OUTPUT, "a")
+                for i in range(1, filelimit + 1):
+                    filename = "page_"+str(i)+".jpg"
+                    text = str(((pytesseract.image_to_string(Image.open(filename)))))
+                    text = text.replace('-\n', '')
+                    f.write(text)
 
-        for i in range(1, filelimit + 1):
-            filename = "page_"+str(i)+".jpg"
-            text = str(((pytesseract.image_to_string(Image.open(filename)))))
-            text = text.replace('-\n', '')
-            f.write(text)
+                f.close()
 
-        f.close()
+                file = open(FILE_OUTPUT, "rt")
+                data = file.read()
+                print(data)
 
-        file = open(FILE_OUTPUT, "rt")
-        data = file.read()
+                return self._output_data(data)
+        
+        except Exception as e:
+            print("ERROR : "+str(e)) 
+            return {}
 
-        return self._output_data(data)
+
 
     def _get_pdf_searchable_pages(self, fname):
         print('get_pdf_searchable_pages')
