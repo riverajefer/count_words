@@ -13,11 +13,11 @@ from flask import Flask
 
 app = Flask(__name__)
 
-UPLOAD_FOLDER = '/home/count_words/files'
-app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
+UPLOAD_FOLDER = '/home/Flask/count_words/files'
+app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = {'pdf', 'docx', 'doc',  'xls', 'xlsx', 'txt'}
-FILE_OUTPUT = '/home/count_words/files/output.txt'
+FILE_OUTPUT = '/home/Flask/count_words/files/output.txt'
 
 
 class CountWordsDocument():

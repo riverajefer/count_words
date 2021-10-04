@@ -51,3 +51,23 @@ ExecStart=/home/count_words/env/bin/gunicorn --workers 3 --bind 0.0.0.0:5000  -m
 
 [Install]
 WantedBy=multi-user.target
+
+sudo ln -sT ~/home/count_words /var/www/html/count_words_app
+
+/etc/apache2/sites-enabled
+
+
+tail -f /var/log/apache2/error.log
+
+
+sudo a2ensite newsletter.example.com.conf
+sudo certbot --apache -d newsletter.example.com -d www.newsletter.example.com
+
+
+
+sudo a2ensite translative.ptetime.conf
+
+sudo certbot --apache -d translative.ptetime.com -d www.translative.ptetime.com
+
+
+sudo service apache2 restart

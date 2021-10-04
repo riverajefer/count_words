@@ -19,120 +19,100 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 
-<body class="d-flex h-100 text-center">
-    <div class="container px-5 my-5" style="width: 700px">
+<body>
+    <div class="px-2 my-3" style="width: 260px">
+        <h1 class="fs-6 pl-5 my-2">Form Translative</h1>
         <form id="onSubmit" method="post" enctype="multipart/form-data">
-            <div class="form-floating mb-3">
-                <input class="form-control" name="name" id="name" required type="text" placeholder="Name"
-                    data-sb-validations="required" />
-                <label for="name">Nombre/Name*</label>
-                <div class="invalid-feedback" data-sb-feedback="name:required">Name is required.</div>
+            <div class="mb-3">
+                <input class="form-control form-control-sm" name="name" id="name" required type="text"
+                    placeholder="Nombre/Name*" />
             </div>
-            <div class="form-floating mb-3">
-                <input class="form-control" name="business" id="Business" required type="text" placeholder="Business"
-                    data-sb-validations="required" />
-                <label for="Business">Empresa/Business Name</label>
-                <div class="invalid-feedback" data-sb-feedback="Business:required">Business is required.</div>
+            <div class="mb-3">
+                <input class="form-control form-control-sm" name="business" id="Business" required type="text"
+                    placeholder="Empresa/Business Name*" />
             </div>
-            <div class="form-floating mb-3">
-                <input class="form-control" id="jobPosition" name="jobPosition" type="text" placeholder="Job position"
-                    data-sb-validations="" />
-                <label for="jobPosition">Cargo/Job position</label>
+            <div class="mb-3">
+                <input class="form-control form-control-sm" id="jobPosition" name="jobPosition" type="text"
+                    placeholder="Job position" />
             </div>
-            <div class="form-floating mb-3">
-                <select name="country" class="countries form-control" required id="countryId">
+            <div class="mb-3">
+                <select name="country" class="countries form-control form-control-sm" required id="countryId">
                     <option value="">Select</option>
                 </select>
-                <label for="countryId">Pais/Country</label>
             </div>
-            <div class="form-floating mb-3">
-                <select name="state" class="states form-control" id="stateId">
-                    <option value="">Select</option>
+            <div class="mb-3">
+                <select name="state" class="states form-control form-control-sm" id="stateId">
+                    <option value="">Select Departamento/State</option>
                 </select>
-                <label for="stateId">Departamento/State</label>
             </div>
-            <div class="form-floating mb-3">
-                <select name="city" class="cities form-control" id="cityId">
-                    <option value="">Select</option>
+            <div class="mb-3">
+                <select name="city" class="cities form-control form-control-sm" id="cityId">
+                    <option value="">Select Ciudad/City</option>
                 </select>
-                <label for="cityId">Ciudad/City</label>
             </div>
-            <div class="form-floating mb-3">
-                <input class="form-control" name="phone" required id="telefonoMovil" type="text"
-                    placeholder="Teléfono móvil" data-sb-validations="required" />
-                <label for="telefonoMovil">Teléfono móvil/Mobile number</label>
-                <div class="invalid-feedback" data-sb-feedback="telefonoMovil:required">Teléfono móvil is required.
-                </div>
+            <div class="mb-3">
+                <input class="form-control form-control-sm" form-control-sm name="phone" required id="telefonoMovil"
+                    type="text" placeholder="Teléfono móvil/Mobile phone*" />
             </div>
-            <div class="form-floating mb-3">
-                <input class="form-control" name="email" required id="emailAddress" type="email"
-                    placeholder="Email Address" data-sb-validations="required,email" />
-                <label for="emailAddress">Email Address</label>
-                <div class="invalid-feedback" data-sb-feedback="emailAddress:required">Email Address is required.</div>
-                <div class="invalid-feedback" data-sb-feedback="emailAddress:email">Email Address Email is not valid.
-                </div>
+            <div class="mb-3">
+                <input class="form-control form-control-sm" name="email" required id="emailAddress" type="email"
+                    placeholder="Email Address" />
             </div>
-            <div class="form-floating mb-3">
-                <textarea class="form-control" id="message" type="text" name="message" placeholder="Message"
-                    style="height: 10rem;"></textarea>
-                <label for="message">Message</label>
+            <div class="mb-3">
+                <textarea class="form-control form-control-sm" id="message" rows="3" type="text" name="message"
+                    placeholder="Message" style="height: 10rem;"></textarea>
             </div>
-            <div class="form-floating mb-3 mt-3">
-                <input class="form-control" id="dateDelivery" required name="dateDelivery" type="date"
-                    placeholder="Fecha de entrega" data-sb-validations="required" />
-                <label for="dateDelivery">Fecha de entrega/Delivery date*</label>
-                <div class="invalid-feedback" data-sb-feedback="dateDelivery:required">Delivery date is required.</div>
-            </div>            
+            <div class="mb-3 mt-3">
+                <input class="form-control form-control-sm" id="dateDelivery" required name="dateDelivery" type="date"
+                    placeholder="Fecha de entrega/Delivery date*" />
+            </div>
             <div class="mb-6">
-                <p>Change</p>
+                <p>from / to</p>
                 <div class="row">
                     <div class="col" id="lang_from">
-                        <p>SPANISH</p>
-                        <p style="display: none">ENGLISH</p>
+                        <p class="fs-6">SPANISH</p>
+                        <p class="fs-6" style="display: none">ENGLISH</p>
                     </div>
                     <div class="col">
-                        <button type="button" id="btnToggle" class="btn btn-outline-info">
+                        <button type="button" id="btnToggle" class="btn btn-sm btn-outline-info">
                             <span class="material-icons">swap_horiz</span>
                         </button>
                     </div>
                     <div class="col" id="lang_to">
-                        <p>ENGLISH</p>
-                        <p style="display: none">SPANISH</p>
+                        <p class="fs-6">ENGLISH</p>
+                        <p class="fs-6" style="display: none">SPANISH</p>
                     </div>
                 </div>
             </div>
-
-            <main class="px-3 mt-15">
-                <p class="lead my-5">
-                    Digital PDF documents or scanned PDF.<br>
-                    maximum file size: <b>10Mb</b>
-                <ul>
-                    <li>.pdf</li>
-                    <li>.doc</li>
-                    <li>.docx</li>
-                    <li>.xls</li>
-                    <li>.xlsx</li>
-                    <li>.txt</li>
-                </ul>
+            <hr>
+            <main class="px-1">
+                <p>Upload your file</p>
+                <p class="fs-6">
+                    .pdf, .doc, .docx, .xls, .xlsx,.txt
                 </p>
+
                 <fieldset>
-                    <label for="file">Select a file</label>
-                    <input name="file" id="file" type="file" required
+                    <label for="file" class="fs-6">Select your file. Max <b>30Mb</b> </label>
+                    <input class="form-control form-control-sm" name="file" id="file" type="file" required
                         accept=".txt, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
                 </fieldset>
+                <p class="my-3 fs-6">
+                    If your file is larger than 30 Mb contact us at contact@translative.com.co
+                </p>
                 <fieldset>
                     <p id="wait" class="my-5">
                         Processing... <br>
-                        <img width="120px" class="my-5" src="{{url_for('static', filename='loader.gif')}}">
+                        <img width="100px" class="my-5" src="{{url_for('static', filename='loader.gif')}}">
                     </p>
                 </fieldset>
-                <div class="send_success my-5">
+                <div class="send_success my-2">
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        Send Success!
+                        <p class="my-2 fs-6">Send Success!</p>
+                        <p class="my-2 fs-6">Your message is being processed. We will send you a quote as soon as possible. Thank you for trusting us!</p>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 </div>
-                <div class="send_error my-5">
+                <div class="send_error my-2">
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
                         Error <p id="msg_error"></p>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -140,15 +120,17 @@
                 </div>
             </main>
             <div class="d-none" id="submitErrorMessage">
-                <div class="text-center text-danger mb-3">Error sending message!</div>
+                <div class="text-center text-danger mb-3">
+                    Error sending message! <br>
+                    contact@translative.com.co
+                </div>
             </div>
 
-            <div class="d-grid my-5">
-                <button class="btn btn-success btn-lg" type="submit" id="submitBtn" type="submit">Submit</button>
+            <div class="d-grid my-3">
+                <button class="btn btn-sm btn-success btn-lg" type="submit" id="submitBtn" type="submit">Submit</button>
             </div>
         </form>
     </div>
-    <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
 </body>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"
@@ -167,7 +149,7 @@
 
     function validateFile() {
         const allowedExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt'];
-        const sizeLimit = 15000000;
+        const sizeLimit = 20000000;
 
         const { name: fileName, size: fileSize } = this.files[0];
 
@@ -176,7 +158,7 @@
             alert("Alert !\nPlease upload only .pdf, doc and .docx .xls .xlsx .txt");
             this.value = null;
         } else if (fileSize > sizeLimit) {
-            alert("Alert !\nFile size too large. max 10Mb")
+            alert("Alert !\nFile size too large. max 30Mb \nIf your file is larger than 30 Mb contact us at contact@translative.com.co ")
             this.value = null;
         }
     }
@@ -200,7 +182,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '/form_client',
+                url: '/flaskapp/form_client',
                 data: form_data,
                 contentType: false,
                 cache: false,
