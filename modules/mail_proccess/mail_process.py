@@ -31,9 +31,9 @@ FILE_OUTPUT_TEXT_PLAIM = '/home/Flask/count_words/files/output.txt'
 
 class MailProccess():
     
-    def send_mail(self, data_form, data_count_text, file):
+    def send_mail(self, data_form, data_count_text, file, send_text_plain = False):
         
-        print('Start send mail! ')
+        print('Start send mail admin! ')
         filename = secure_filename(file.filename)
         path_file = os.path.abspath(filename)
         mime = magic.Magic(mime=True)
@@ -48,12 +48,14 @@ class MailProccess():
             with app.open_resource(path_file) as fp:
                 msg.attach(filename = file.filename, content_type = content_type, data = fp.read())
             
-            with app.open_resource(FILE_OUTPUT_TEXT_PLAIM) as fp:
-                msg.attach(filename = "transcript", content_type ="text/plain", data = fp.read())
+            if send_text_plain:
+                with app.open_resource(FILE_OUTPUT_TEXT_PLAIM) as fp:
+                    msg.attach(filename = "transcript", content_type ="text/plain", data = fp.read())
                 
             mail.send(msg)
-            app.logger.info('Email enviado !')
-            print('Enviado !')
+            app.logger.info('Email enviado admin !')
+            print('Enviado admin !')
+            
             
     def send_mail_client(self, email_client):
         print('Start send mail Client! ')
@@ -63,5 +65,5 @@ class MailProccess():
         with app.app_context(), app.test_request_context():
             msg.html = render_template('mail_client.html')
             mail.send(msg)
-            app.logger.info('Email enviado !')
-            print('Enviado !')
+            app.logger.info('Email enviado cliente !')
+            print('Enviado cliente !')

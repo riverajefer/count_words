@@ -77,9 +77,6 @@ class CountWordsDocument():
             print('inicio convert_from_path')
             with tempfile.TemporaryDirectory() as path:
                 pages = convert_from_path(file, output_folder=path)
-            
-                #pages = convert_from_path(file, 500)
-                #pages = convert_from_bytes(open(file, 'rb').read())
                 image_counter = 1
 
                 for page in pages:
@@ -94,8 +91,7 @@ class CountWordsDocument():
                     filename = "page_"+str(i)+".jpg"
                     text = str(((pytesseract.image_to_string(Image.open(filename)))))
                     text = text.replace('-\n', '')
-                    f.write(text)
-
+                    f.write(text.encode().decode('ascii', 'ignore'))
                 f.close()
 
                 file = open(FILE_OUTPUT, "rt")

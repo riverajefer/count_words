@@ -35,7 +35,11 @@ def upload_file():
 
 def on_proccess_text_and_send_mail(file, data_form):
     data_count_text = CountWordsDocument().on_start_count(file=file)
-    MailProccess().send_mail(data_form=data_form, data_count_text=data_count_text, file=file)
+    MailProccess().send_mail(data_form=data_form, data_count_text=data_count_text, file=file, send_text_plain=True)
+
+
+def on_proccess_text_and_send_mail_attach(file, data_form):
+    MailProccess().send_mail(data_form=data_form, data_count_text={}, file=file, send_text_plain=False)
 
 
 def send_mail_cliente(email_client):
@@ -60,6 +64,7 @@ def form_client():
             }
             print(data)
             send_mail_cliente(email_client=request.form['email'])
+            threading.Thread(target=on_proccess_text_and_send_mail_attach, daemon=True, args=[file, data_form]).start()            
             
             return jsonify(data)
 
