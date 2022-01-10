@@ -51,3 +51,6 @@ li {
     margin: 0 20px;
     font-size: 1.2em;
 }
+.btn-success {
+    background-color: #1D71B8;
+}

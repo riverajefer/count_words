@@ -15,21 +15,25 @@
         integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="//geodata.solutions/includes/countrystatecity.js"></script>
+    
+    <!-- <script src="//geodata.solutions/includes/countrystatecity.js"></script> -->
+
+    <script src="{{ url_for('static', filename='js/countrystatecity.js') }}"></script>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 
 <body>
     <div class="px-2 my-3" style="width: 260px">
-        <h1 class="fs-6 pl-5 my-2">Form Translative</h1>
+        <h1 class="fs-6 pl-5 my-2" id="form_title">Form Translative</h1>
         <form id="onSubmit" method="post" enctype="multipart/form-data">
             <div class="mb-3">
                 <input class="form-control form-control-sm" name="name" id="name" required type="text"
-                    placeholder="Nombre/Name*" />
+                    placeholder="Name" />
             </div>
             <div class="mb-3">
-                <input class="form-control form-control-sm" name="business" id="Business" required type="text"
-                    placeholder="Empresa/Business Name*" />
+                <input class="form-control form-control-sm" name="business" id="business" required type="text"
+                    placeholder="Business Name" />
             </div>
             <div class="mb-3">
                 <input class="form-control form-control-sm" id="jobPosition" name="jobPosition" type="text"
@@ -42,17 +46,17 @@
             </div>
             <div class="mb-3">
                 <select name="state" class="states form-control form-control-sm" id="stateId">
-                    <option value="">Select Departamento/State</option>
+                    <option value="">Select State</option>
                 </select>
             </div>
             <div class="mb-3">
                 <select name="city" class="cities form-control form-control-sm" id="cityId">
-                    <option value="">Select Ciudad/City</option>
+                    <option value="">Select City</option>
                 </select>
             </div>
             <div class="mb-3">
-                <input class="form-control form-control-sm" form-control-sm name="phone" required id="telefonoMovil"
-                    type="text" placeholder="Teléfono móvil/Mobile phone*" />
+                <input class="form-control form-control-sm" form-control-sm name="phone" required id="phone"
+                    type="text" placeholder="Mobile phone" />
             </div>
             <div class="mb-3">
                 <input class="form-control form-control-sm" name="email" required id="emailAddress" type="email"
@@ -63,16 +67,16 @@
                     placeholder="Message" style="height: 10rem;"></textarea>
             </div>
             <div class="mb-3 mt-3">
-                <label for="dateDelivery">Fecha de entrega/Delivery date*</label>
+                <label for="dateDelivery" id="dateDelivery">Delivery date</label>
                 <input class="form-control form-control-sm" id="dateDelivery" required name="dateDelivery" type="date"
-                    placeholder="Fecha de entrega/Delivery date*" />
+                    placeholder="Delivery date" />
             </div>
             <div class="mb-6">
-                <p>from / to</p>
+                <p id="from_to">from - to</p>
                 <div class="row">
                     <div class="col" id="lang_from">
-                        <p class="fs-6">SPANISH</p>
-                        <p class="fs-6" style="display: none">ENGLISH</p>
+                        <p class="fs-6 spanish">SPANISH</p>
+                        <p class="fs-6 english" style="display: none">ENGLISH</p>
                     </div>
                     <div class="col">
                         <button type="button" id="btnToggle" class="btn btn-sm btn-outline-info">
@@ -80,36 +84,36 @@
                         </button>
                     </div>
                     <div class="col" id="lang_to">
-                        <p class="fs-6">ENGLISH</p>
-                        <p class="fs-6" style="display: none">SPANISH</p>
+                        <p class="fs-6 english">ENGLISH</p>
+                        <p class="fs-6 spanish" style="display: none">SPANISH</p>
                     </div>
                 </div>
             </div>
             <hr>
             <main class="px-1">
-                <p>Upload your file</p>
+                <p id="upload_file">Upload your file</p>
                 <p class="fs-6">
                     .pdf, .doc, .docx, .xls, .xlsx,.txt
                 </p>
 
                 <fieldset>
-                    <label for="file" class="fs-6">Select your file. Max <b>30Mb</b> </label>
+                    <label for="file" class="fs-6"><span id="select_file">Select your file.</span> Max <b>30Mb</b> </label>
                     <input class="form-control form-control-sm" name="file" id="file" type="file" required
                         accept=".txt, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
                 </fieldset>
-                <p class="my-3 fs-6">
+                <p class="my-3 fs-6" id="note_file">
                     If your file is larger than 30 Mb contact us at contact@translative.com.co
                 </p>
                 <fieldset>
-                    <p id="wait" class="my-5">
+                    <p id="wait" class="my-5 processing">
                         Processing... <br>
                         <img width="100px" class="my-5" src="{{url_for('static', filename='loader.gif')}}">
                     </p>
                 </fieldset>
                 <div class="send_success my-2">
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <p class="my-2 fs-6">Send Success!</p>
-                        <p class="my-2 fs-6">Your message is being processed. We will send you a quote as soon as possible. Thank you for trusting us!</p>
+                        <p class="my-2 fs-6" id="send_success">Send Success!</p>
+                        <p class="my-2 fs-6" id="send_text">Your message is being processed. We will send you a quote as soon as possible. Thank you for trusting us!</p>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 </div>
@@ -121,7 +125,7 @@
                 </div>
             </main>
             <div class="d-none" id="submitErrorMessage">
-                <div class="text-center text-danger mb-3">
+                <div class="text-center text-danger mb-3" id="error_send">
                     Error sending message! <br>
                     contact@translative.com.co
                 </div>
@@ -141,6 +145,39 @@
     integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
     crossorigin="anonymous"></script>
 <script>
+    var url = new URL(window.location.href);
+    var lang = url.searchParams.get("lang");
+    console.log('lang: ', lang);
+
+    if(lang==='es') {
+        $('#form_title').text('Formulario Translative');
+        $("#name").attr("placeholder", "Nombre");
+        $("#business").attr("placeholder", "Empresa");
+        $("#jobPosition").attr("placeholder", "Cargo");
+        $("#phone").attr("placeholder", "Teléfono");
+        $("#phone").attr("placeholder", "Teléfono móvil");
+        $("#emailAddress").attr("placeholder", "Correo electrónico");
+        $("#message").attr("placeholder", "Mensaje");
+        $("#dateDelivery").attr("placeholder", "Fecha de entrega");
+        $("#dateDelivery").text("Fecha de entrega");
+        setTimeout(()=>{
+            $('#countryId option:first').text('Seleccione Pais');
+        },1000);
+        $('#stateId option:first').text('Seleccione Departamento');
+        $('#cityId option:first').text('Seleccione Ciudad');
+        $('#from_to').text('Seleccione el idioma de origen y destino');
+        $('.english').text('INGLÉS');
+        $('.spanish').text('ESPAÑOL');
+        $('#upload_file').text('Cargar archivo');
+        $('#note_file').text('Si su archivo es mayor a 30 Mb contáctenos a contact@translative.com.co');
+        $('#send_success').text('Enviado correctamente');
+        $('#send_text').text('Su mensaje está siendo procesado. Le enviaremos un presupuesto lo antes posible. ¡Gracias por confiar en nosotros!');
+        $('#error_send').text('Ha ocurrido algún error porfavor contactar a contact@translative.com.co');
+        $('#submitBtn').text('Enviar');
+        $('#processing').text('Procesando...');
+        $('#select_file').text('Seleccione su archivo.');
+    }
+
     $('#btnToggle').click(() => {
         $('#lang_from p').toggle();
         $('#lang_to p').toggle();
